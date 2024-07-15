@@ -2,6 +2,7 @@ import com.codeborne.selenide.Configuration;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.*;
@@ -13,15 +14,22 @@ public class FindJUnit5 {
             Configuration.pageLoadStrategy = "eager";
             Configuration.timeout = 5000;
             Configuration.baseUrl ="https://github.com";
-            Configuration.holdBrowserOpen = true;
     }
     @Test
-    void findExample() {
+    void findExampleTest() {
         open("/selenide/selenide");
         $("#wiki-tab").click();
         $(byText("Soft assertions")).shouldBe(visible).click();
-        $$("div.wiki-content div").get(5).$("a");
-
+        $("#wiki-body").shouldHave(text("@ExtendWith({SoftAssertsExtension.class})\n" +
+                "class Tests {\n" +
+                "  @Test\n" +
+                "  void test() {\n" +
+                "    Configuration.assertionMode = SOFT;\n" +
+                "    open(\"page.html\");\n" +
+                "\n" +
+                "    $(\"#first\").should(visible).click();\n" +
+                "    $(\"#second\").should(visible).click();\n" +
+                "  }\n" +
+                "}"));
     }
-
 }
